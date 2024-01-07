@@ -1,0 +1,209 @@
+CREATE TABLE "Bicycles" (
+	"BikeID"	INTEGER NOT NULL UNIQUE,
+	"manufacturer"	VARCHAR(30) NOT NULL,
+	"name"	VARCHAR(20) NOT NULL,
+	"weight"	INTEGER NOT NULL CHECK("weight" > 0),
+	PRIMARY KEY("BikeID")
+);
+
+CREATE TABLE "Brakes" (
+	"BrakeID"	INTEGER NOT NULL UNIQUE,
+	"brake_type"	VARCHAR(5) NOT NULL,
+	"piston"	INTEGER NOT NULL CHECK("brake_type" <> 'rim' OR "piston" = 0),
+	PRIMARY KEY("BrakeID")
+);
+
+CREATE TABLE "Gears" (
+	"GearID"	INTEGER NOT NULL UNIQUE,
+	"ammount"	INTEGER NOT NULL DEFAULT 1 CHECK("ammount" > 0),
+	PRIMARY KEY("GearID")
+);
+
+CREATE TABLE "Handlebars" (
+	"HandlebarID"	INTEGER NOT NULL UNIQUE,
+	"bar_type"	VARCHAR(10) NOT NULL,
+	"width"	INTEGER NOT NULL,
+	PRIMARY KEY("HandlebarID")
+);
+
+CREATE TABLE "Setup" (
+	"BikeID"	INTEGER NOT NULL UNIQUE,
+	"BrakeID"	INTEGER NOT NULL,
+	"HandlebarID"	INTEGER NOT NULL,
+	"GearId"	INTEGER NOT NULL,
+	FOREIGN KEY("BrakeID") REFERENCES "Brakes"("BrakeID"),
+	FOREIGN KEY("HandlebarID") REFERENCES "Handlebars"("HandlebarID"),
+	FOREIGN KEY("BikeID") REFERENCES "Bicycles"("BikeID"),
+	FOREIGN KEY("GearId") REFERENCES "Gears"("GearID"),
+	PRIMARY KEY("BikeID")
+);
+
+CREATE TABLE "Suspension" (
+	"SuspensionID"	INTEGER NOT NULL UNIQUE,
+	"front_suspension"	INTEGER NOT NULL DEFAULT 0 CHECK ("front_suspension" >= 0),
+	"rear_suspension"	INTEGER NOT NULL DEFAULT 0 CHECK ("rear_suspension" >= 0),
+	PRIMARY KEY("SuspensionID")
+);
+
+CREATE TABLE "Frame" (
+	"BikeID"	INTEGER NOT NULL,
+	"SuspensionID"	INTEGER NOT NULL,
+	"material"	VARCHAR(10),
+	"size"	CHAR,
+	FOREIGN KEY("SuspensionID") REFERENCES "Suspension"("SuspensionID"),
+	FOREIGN KEY("BikeID") REFERENCES "Bicycles"("BikeID"),
+	PRIMARY KEY("BikeID","SuspensionID")
+);
+
+CREATE TABLE "Wheel" (
+	"WheelID"	INTEGER NOT NULL UNIQUE,
+	"wheel_size"	INTEGER NOT NULL,
+	"tire_width"	FLOAT NOT NULL,
+	PRIMARY KEY("WheelID")
+);
+
+CREATE TABLE "Wheel_setup" (
+	"BikeID"	INTEGER NOT NULL,
+	"WheelID"	INTEGER NOT NULL,
+	FOREIGN KEY("WheelID") REFERENCES "Wheel"("WheelID"),
+	FOREIGN KEY("BikeID") REFERENCES "Bicycles"("BikeID") ON UPDATE CASCADE,
+	PRIMARY KEY("BikeID","WheelID")
+);
+
+
+INSERT INTO 'Bicycles' VALUES(001,'Radon','AL 10.0',11);
+INSERT INTO 'Bicycles' VALUES(002,'Cube','Reaction Pro',13);
+INSERT INTO 'Bicycles' VALUES(003,'Cube','TWO15',17);
+INSERT INTO 'Bicycles' VALUES(004,'Specialized','Demo Race',16);
+INSERT INTO 'Bicycles' VALUES(005,'Specialized','Stumpjumper',14);
+INSERT INTO 'Bicycles' VALUES(006,'Cube','ONE55 C:62',14);
+INSERT INTO 'Bicycles' VALUES(007,'Focus','ATLAS 6.8',11);
+INSERT INTO 'Bicycles' VALUES(008,'Santa Cruz','Stigmata CC GRX',9);
+INSERT INTO 'Bicycles' VALUES(009,'Cube','Litening AERO',8);
+INSERT INTO 'Bicycles' VALUES(010,'Radon','Spire Disc 10.0',8);
+INSERT INTO 'Bicycles' VALUES(011,'Santa Cruz','Bronson CS',15);
+INSERT INTO 'Bicycles' VALUES(012,'Lapierre','XRM 7.9',11);
+
+INSERT INTO 'Brakes' VALUES(001,'disc',2);
+INSERT INTO 'Brakes' VALUES(002,'disc',4);
+
+INSERT INTO 'Gears' VALUES(001,12);
+INSERT INTO 'Gears' VALUES(002,11);
+INSERT INTO 'Gears' VALUES(003,7);
+
+INSERT INTO 'Handlebars' VALUES(001,'straight',760);
+INSERT INTO 'Handlebars' VALUES(002,'straight',680);
+INSERT INTO 'Handlebars' VALUES(003,'flared',500);
+INSERT INTO 'Handlebars' VALUES(004,'dropped',420);
+
+INSERT INTO 'Setup' VALUES(001,001,002,001);
+INSERT INTO 'Setup' VALUES(002,001,002,002);
+INSERT INTO 'Setup' VALUES(003,002,001,003);
+INSERT INTO 'Setup' VALUES(004,002,001,003);
+INSERT INTO 'Setup' VALUES(005,002,001,001);
+INSERT INTO 'Setup' VALUES(006,002,001,001);
+INSERT INTO 'Setup' VALUES(007,001,003,002);
+INSERT INTO 'Setup' VALUES(008,001,003,001);
+INSERT INTO 'Setup' VALUES(009,001,004,001);
+INSERT INTO 'Setup' VALUES(010,001,004,001);
+INSERT INTO 'Setup' VALUES(011,002,001,001);
+INSERT INTO 'Setup' VALUES(012,001,001,001);
+
+INSERT INTO 'Suspension' VALUES(001,0,0);
+INSERT INTO 'Suspension' VALUES(002,100,0);
+INSERT INTO 'Suspension' VALUES(003,150,140);
+INSERT INTO 'Suspension' VALUES(004,200,200);
+INSERT INTO 'Suspension' VALUES(005,170,160);
+INSERT INTO 'Suspension' VALUES(006,100,100);
+
+INSERT INTO 'Frame' VALUES(001,002,'aluminium','M');
+INSERT INTO 'Frame' VALUES(002,002,'aluminium','M');
+INSERT INTO 'Frame' VALUES(003,004,'aluminium','M');
+INSERT INTO 'Frame' VALUES(004,004,'carbon','M');
+INSERT INTO 'Frame' VALUES(005,003,'carbon','M');
+INSERT INTO 'Frame' VALUES(006,003,'carbon','M');
+INSERT INTO 'Frame' VALUES(007,001,'carbon','M');
+INSERT INTO 'Frame' VALUES(008,001,'carbon','M');
+INSERT INTO 'Frame' VALUES(009,001,'carbon','M');
+INSERT INTO 'Frame' VALUES(010,001,'carbon','M');
+INSERT INTO 'Frame' VALUES(011,005,'carbon','M');
+INSERT INTO 'Frame' VALUES(012,006,'carbon','M');
+
+INSERT INTO 'Wheel' VALUES(001,29,2.3);
+INSERT INTO 'Wheel' VALUES(002,29,2.4);
+INSERT INTO 'Wheel' VALUES(003,29,2.6);
+INSERT INTO 'Wheel' VALUES(004,27,2.6);
+INSERT INTO 'Wheel' VALUES(005,28,1.8);
+INSERT INTO 'Wheel' VALUES(006,28,1.0);
+
+INSERT INTO 'Wheel_setup' VALUES(001,001);
+INSERT INTO 'Wheel_setup' VALUES(002,001);
+INSERT INTO 'Wheel_setup' VALUES(003,003);
+INSERT INTO 'Wheel_setup' VALUES(003,004);
+INSERT INTO 'Wheel_setup' VALUES(004,003);
+INSERT INTO 'Wheel_setup' VALUES(004,004);
+INSERT INTO 'Wheel_setup' VALUES(005,002);
+INSERT INTO 'Wheel_setup' VALUES(006,002);
+INSERT INTO 'Wheel_setup' VALUES(007,005);
+INSERT INTO 'Wheel_setup' VALUES(008,005);
+INSERT INTO 'Wheel_setup' VALUES(009,006);
+INSERT INTO 'Wheel_setup' VALUES(010,006);
+INSERT INTO 'Wheel_setup' VALUES(011,003);
+INSERT INTO 'Wheel_setup' VALUES(011,004);
+INSERT INTO 'Wheel_setup' VALUES(012,001);
+
+
+
+--Downhill bike
+SELECT manufacturer,name FROM Bicycles
+INNER JOIN Frame on Bicycles.BikeID = Frame.BikeID
+INNER JOIN Suspension on Frame.SuspensionID = Suspension.SuspensionID
+INNER JOIN Setup on Bicycles.BikeID = Setup.BikeID
+INNER JOIN Brakes on Setup.BrakeID = Brakes.BrakeID
+INNER JOIN Handlebars on Setup.HandlebarID = Handlebars.HandlebarID
+INNER JOIN Gears on Setup.GearID = Gears.GearID
+WHERE (ammount < 9) and
+(front_suspension AND rear_suspension > 180);
+
+--Trail bike
+SELECT manufacturer,name FROM Bicycles
+INNER JOIN Frame on Bicycles.BikeID = Frame.BikeID
+INNER JOIN Suspension on Frame.SuspensionID = Suspension.SuspensionID
+INNER JOIN Setup on Bicycles.BikeID = Setup.BikeID
+INNER JOIN Brakes on Setup.BrakeID = Brakes.BrakeID
+INNER JOIN Handlebars on Setup.HandlebarID = Handlebars.HandlebarID
+INNER JOIN Gears on Setup.GearID = Gears.GearID
+WHERE (front_suspension AND rear_suspension > 120) AND (weight < 15) AND
+(ammount >= 10);
+
+--XC-bike
+SELECT manufacturer,name FROM Bicycles
+INNER JOIN Frame on Bicycles.BikeID = Frame.BikeID
+INNER JOIN Suspension on Frame.SuspensionID = Suspension.SuspensionID
+INNER JOIN Setup on Bicycles.BikeID = Setup.BikeID
+INNER JOIN Brakes on Setup.BrakeID = Brakes.BrakeID
+INNER JOIN Handlebars on Setup.HandlebarID = Handlebars.HandlebarID
+INNER JOIN Gears on Setup.GearID = Gears.GearID
+INNER JOIN Wheel_setup on Bicycles.BikeID = Wheel_setup.BikeID
+INNER JOIN Wheel on Wheel_setup.WheelID = Wheel.WheelID
+WHERE (front_suspension <= 120 and front_suspension >= 100) and wheel_size = 29
+and (ammount = 11 or ammount = 12);
+
+--Gravel bike
+SELECT manufacturer,name FROM Bicycles
+INNER JOIN Wheel_setup on Bicycles.BikeID = Wheel_setup.BikeID
+INNER JOIN Wheel on Wheel_setup.WheelID = Wheel.WheelID
+INNER JOIN Setup on Bicycles.BikeID = Setup.BikeID
+INNER JOIN Brakes on Setup.BrakeID = Brakes.BrakeID
+INNER JOIN Handlebars on Setup.HandlebarID = Handlebars.HandlebarID
+WHERE (tire_width < 2 and tire_width > 1) --Inches
+AND (brake_type = 'disc') and (bar_type = 'flared'); 
+
+--road bike
+SELECT manufacturer,name FROM Bicycles
+INNER JOIN Wheel_setup on Bicycles.BikeID = Wheel_setup.BikeID
+INNER JOIN Wheel on Wheel_setup.WheelID = Wheel.WheelID
+INNER JOIN Setup on Bicycles.BikeID = Setup.BikeID
+INNER JOIN Handlebars on Setup.HandlebarID = Handlebars.HandlebarID
+WHERE (tire_width < 1.5 and tire_width > 0.8) AND (bar_type = 'dropper')
+AND (weight<10);
